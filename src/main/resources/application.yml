@@ -1,0 +1,57 @@
+server:
+  port: 9006                 # Gateway listens on 9003
+
+# application.yaml (Inventory-Service)
+
+logging:
+  level:
+    root: INFO
+    io.inventory_service: DEBUG
+    org.springframework.r2dbc: DEBUG          # SQL + binding values
+    org.springframework.data.r2dbc: DEBUG
+    org.springframework.web.reactive: DEBUG
+
+spring:
+  application:
+    name: inventory-service
+
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5433/yapa
+    username: postgres
+    password: postgres
+    properties:
+      schema: yapa
+
+    migrate:
+      enabled: true
+      resources-paths: db/migration
+      baseline-on-migrate: true
+
+  # This is where Spring Security looks for your JWT issuer
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/yaper
+
+
+  # Credentials for your own AdminService (client-credentials flow)
+auth:
+  admin:
+    username: admin
+    password: admin
+
+keycloak:
+  auth-server-url: http://localhost:8080
+  realm: yaper
+  client-id: yapper-backend
+  client-secret: YQginy6pyqWZrrYsDzUiTDVv3xTQOZ12
+
+file-storage:
+  base-path: ./uploads
+
+kafka:
+  bootstrap-servers: localhost:9092
+  topics:
+    stock-reserved:  stock.reserved.v1
+    stock-released:  stock.released.v1
