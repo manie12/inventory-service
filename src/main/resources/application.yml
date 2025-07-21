@@ -53,5 +53,58 @@ file-storage:
 kafka:
   bootstrap-servers: localhost:9092
   topics:
-    stock-reserved:  stock.reserved.v1
-    stock-released:  stock.released.v1
+    stock-reserved: stock.reserved.v1
+    stock-released: stock.released.v1
+    stock-adjusted: stock.adjusted.v1   # ← already added for “Adjust” feature
+    stock-added: stock-added          # already published by inbound events
+    backorder-queued: backorder-queued
+    backorder-fulfilled: backorder-fulfilled
+  producer:
+    acks: all
+    retries: 3
+    batch-size: 16384
+    linger-ms: 1
+    buffer-memory: 33554432
+    compression-type: snappy
+    enable-idempotence: true
+    request-timeout-ms: 30000
+    delivery-timeout-ms: 120000
+    max-in-flight-requests-per-connection: 1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  tracing:
+    sampling:
+      probability: 1.0           # sample everything in dev
+  metrics:
+    tags:
+      application: inventory-service
+  prometheus:
+    metrics:
+      export:
+        enabled: true            # /actuator/prometheus
+
+scrape_configs:
+  - job_name: inventory-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['inventory-service:9004']
+
+groups:
+  - name: inventory
+    rules:
+      - alert: HighShrinkage
+        expr: increase(inventory_adjust_total{reason="SHRINK"}[24h]) > 50
+        for: 15m
+        labels: { severity: warning }
+        annotations:
+          description: "Shrinkage today is >50 units"
+          runbook: https://wiki.yapa.local/runbooks/inv/shrinkage
+
+inventory:
+  snapshot:
+    cron: "0 0 * * * *"   # every top of the hour (Spring cron syntax)
+    kafka-topic: "inventory-snapshot"

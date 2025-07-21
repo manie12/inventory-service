@@ -3,7 +3,6 @@ package io.inventory_service.web;
 
 import io.inventory_service.dtos.ReserveRequest;
 import io.inventory_service.service.StockService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,5 +31,12 @@ public class StockController {
         return service.release(r.getTenantId(), r.getSku(), r.getLocation(), r.getQty(), r.getOrderId())
                 .map(ok -> ok ? ResponseEntity.noContent().build()
                         : ResponseEntity.status(304).build());
+    }
+
+    @PostMapping("/reserve/units")
+    public Mono<UnitReserveResponse> reserveUnits(@RequestBody UnitReserveRequest r) {
+        return stockService.reserveUnits(r.tenantId(), r.sku(), r.location(),
+                        r.unitIds().size(), r.orderId())
+                .map(ids -> new UnitReserveResponse(true, ids));
     }
 }

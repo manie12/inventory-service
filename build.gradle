@@ -77,6 +77,17 @@ dependencies {
 	/* ── Native resolver for Apple Silicon (optional but handy) ────────────── */
 	runtimeOnly "io.netty:netty-resolver-dns-native-macos:4.1.121.Final:osx-aarch_64"
 
+	// Micrometer core + Prometheus registry
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+
+	// OpenTelemetry auto-instrumentation (traces)
+	implementation platform("io.opentelemetry:opentelemetry-bom:1.40.1")
+	implementation 'io.opentelemetry:opentelemetry-api'
+	implementation 'io.opentelemetry:opentelemetry-sdk'
+	implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
+
+	// Structured JSON logging
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 	/* ── Testing ───────────────────────────────────────────────────────────── */
 	testImplementation "org.springframework.boot:spring-boot-starter-test"
 	testImplementation "io.projectreactor:reactor-test"
