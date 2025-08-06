@@ -2,7 +2,7 @@ package io.inventory_service.service;
 
 import io.inventory_service.models.InventorySnapshot;
 import io.inventory_service.repo.InventorySnapshotRepository;
-import io.inventory_service.repo.StockItemRepository;
+import io.inventory_service.repo.InventoryItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import reactor.core.publisher.Flux;
 
 import java.time.Instant;
 
@@ -21,7 +20,7 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class SnapshotJob {
 
-    private final StockItemRepository stockRepo;
+    private final InventoryItemRepository stockRepo;
     private final InventorySnapshotRepository snapRepo;
     private final KafkaTemplate<String, Object> kafka;
 

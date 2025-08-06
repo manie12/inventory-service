@@ -1,7 +1,7 @@
 package io.inventory_service.service.Impl;
 
 import io.inventory_service.config.MetricsConfig;
-import io.inventory_service.repo.StockItemRepository;
+import io.inventory_service.repo.InventoryItemRepository;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StockServiceImpl {
 
-    private final StockItemRepository repo;
+    private final InventoryItemRepository repo;
     private final ReactiveStringRedisTemplate redis;
     private final KafkaTemplate<String, Object> kafka;
     private final MetricsConfig metrics;        // <-- inject
@@ -32,11 +32,6 @@ public class StockServiceImpl {
     @Value("${kafka.topics.stock-released}")
     private String topicReleased;
 
-    @Value("${kafka.topics.stock-reserved}")
-    private String topicReserved;
-
-    @Value("${kafka.topics.stock-released}")
-    private String topicReleased;
 
     // -------------- RESERVE --------------------------------------------------
     @Timed(value = "inventory_reserve_latency_seconds",              // OTEL + Micrometer

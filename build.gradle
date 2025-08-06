@@ -55,7 +55,7 @@ dependencies {
 	/* ── Messaging & resilience ────────────────────────────────────────────── */
 	implementation "io.projectreactor.kafka:reactor-kafka:1.3.19"
 	implementation "io.github.resilience4j:resilience4j-reactor:2.2.0"
-	implementation 'org.apache.commons:commons-pool2'            // redis conn pool
+//	implementation 'org.apache.commons:commons-pool2'            // redis conn pool
 
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation "org.apache.kafka:kafka-clients:${kafkaVersion}"

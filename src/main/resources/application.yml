@@ -53,12 +53,12 @@ file-storage:
 kafka:
   bootstrap-servers: localhost:9092
   topics:
-    stock-reserved: stock.reserved.v1
-    stock-released: stock.released.v1
-    stock-adjusted: stock.adjusted.v1   # ← already added for “Adjust” feature
-    stock-added: stock-added          # already published by inbound events
-    backorder-queued: backorder-queued
-    backorder-fulfilled: backorder-fulfilled
+    stock.received.v1: stock.received.v1     # inbound receipts
+    stock.reserved.v1: stock.reserved.v1     # reservations placed
+    stock.released.v1: stock.released.v1     # reservations released
+    stock.adjusted.v1: stock.adjusted.v1     # manual adjustments
+    backorder.queued.v1: backorder.queued.v1   # backorder requests
+    backorder.fulfilled.v1: backorder.fulfilled.v1 # backorder fulfillments
   producer:
     acks: all
     retries: 3
@@ -70,7 +70,6 @@ kafka:
     request-timeout-ms: 30000
     delivery-timeout-ms: 120000
     max-in-flight-requests-per-connection: 1
-
 management:
   endpoints:
     web:
@@ -91,7 +90,7 @@ scrape_configs:
   - job_name: inventory-service
     metrics_path: /actuator/prometheus
     static_configs:
-      - targets: ['inventory-service:9004']
+      - targets: [ 'inventory-service:9004' ]
 
 groups:
   - name: inventory
@@ -108,3 +107,10 @@ inventory:
   snapshot:
     cron: "0 0 * * * *"   # every top of the hour (Spring cron syntax)
     kafka-topic: "inventory-snapshot"
+
+
+services:
+  endpoints:
+    product: http://product-service:8080
+    payment: http://payment-service:8080
+    auth: https://auth.example.com

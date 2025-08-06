@@ -2,7 +2,7 @@ package io.inventory_service.service;
 
 import io.inventory_service.dtos.BackOrder;
 import io.inventory_service.repo.BackOrderRepository;
-import io.inventory_service.repo.StockItemRepository;
+import io.inventory_service.repo.InventoryItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -11,7 +11,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -23,7 +22,7 @@ import java.util.UUID;
 public class BackOrderService {
 
     private final BackOrderRepository queueRepo;
-    private final StockItemRepository stockRepo;
+    private final InventoryItemRepository stockRepo;
     private final KafkaTemplate<String, Object> kafka;
 
     /**
